@@ -20,12 +20,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft = details.max_participants - details.participants.length;
 
+        // Participants section
+        // Create participants section using DOM methods to avoid XSS
+        const participantsDiv = document.createElement("div");
+        participantsDiv.className = "activity-card-participants";
+        const participantsHeader = document.createElement("h5");
+        participantsHeader.textContent = "Participants";
+        participantsDiv.appendChild(participantsHeader);
+        if (details.participants.length > 0) {
+          const ul = document.createElement("ul");
+          details.participants.forEach((p) => {
+            const li = document.createElement("li");
+            li.textContent = p;
+            ul.appendChild(li);
+          });
+          participantsDiv.appendChild(ul);
+        } else {
+          const noParticipantsDiv = document.createElement("div");
+          noParticipantsDiv.className = "activity-card-no-participants";
+          noParticipantsDiv.textContent = "No participants yet.";
+          participantsDiv.appendChild(noParticipantsDiv);
+        }
+
         activityCard.innerHTML = `
           <h4>${name}</h4>
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
         `;
+        activityCard.appendChild(participantsDiv);
 
         activitiesList.appendChild(activityCard);
 
